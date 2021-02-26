@@ -1,0 +1,9 @@
+# Venv files
+Pipfile
+Pipfile.lock
+
+# Venv folders, in case we use venv
+./venv
+
+# Files depending on the 'execution'.
+log.txt
