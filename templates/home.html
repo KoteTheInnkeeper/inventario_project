@@ -1,5 +1,50 @@
 {% extends 'base.html' %}
 
+{% block navbar_elements %}
+<li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="#">Inicio</a>
+  </li>
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="ProductosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+      Productos
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="ProductosDropdown">
+      <li><a class="dropdown-item" href="#">Ver stock</a></li>
+      <li><a class="dropdown-item" href="#">Agregar</a></li>
+      <li><a class="dropdown-item" href="#">Eliminar</a></li>
+    </ul>
+  </li>
+{% endblock %}
+
+<!--Trigger sign in modal button-->
+{% block signbutton %}
+<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#LoginModal">Ingresar</button>
+<!--Sign in modal-->
+<div class="modal fade" id="LoginModal" tabindex="-1" aria-labelledby="LoginModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Inicio de sesión</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            Inicie sesión para poder utilizar la página
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+        </div>
+    </div>
+</div>
+<!--End sign in modal-->
+    
+
+
+{% endblock %}
+
+{% block content %}
+{% endblock%}
+
 {% block footer %}
-<p>Soy un piesedor</p>
 {% endblock %}
