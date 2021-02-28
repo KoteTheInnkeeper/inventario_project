@@ -1,6 +1,7 @@
 import logging
 
 from databases.database_connection import DatabaseCursor
+from werkzeug.security import check_password_hash
 
 # Typing
 from typing import List
@@ -15,9 +16,9 @@ logging.basicConfig(format="%(asctime)s %(levelname)-8s [%(filename)s:%(lineno)d
 log = logging.getLogger("inventory_logger.database_management")
 
 
-class InvDatabase:
+class Database:
     """
-        A class to manage all of the 'Inventory' as a database with methods.
+        A class to manage all of the .db file as a database with methods.
     """
     def __init__(self, host: str):
         self.host = host
@@ -37,6 +38,8 @@ class InvDatabase:
                 log.debug("Creating 'products' table if it doesn't exists already.")
                 cursor.execute("CREATE TABLE IF NOT EXISTS products(name TEXT UNIQUE primary key, cost_price REAL, "
                                "sell_price REAL, in_stock INTEGER)")
+                log.debug("Creating the 'users' table if it doesn't exists already")
+                cursor.execute("CREATE TABLE IF NOT EXISTS users(username TEXT UNIQUE primary key, password TEXT)")
         except Exception:
             log.critical("Unable to initialize the database.")
             raise DatabaseInitError("Unable to initialize the database. Check the 'log.txt' file")
@@ -70,7 +73,7 @@ class InvDatabase:
         :return: None
         """
         # Check if the product exists already and if the product doesn't exists, we start the adding process.
-        if not InvDatabase.check_if_exists(self.host, name):
+        if not Database.check_if_exists(self.host, name):
             try:
                 log.debug("Adding the product")
                 with DatabaseCursor(self.host) as cursor:
@@ -94,7 +97,7 @@ class InvDatabase:
         :param in_stock: the total number of objects encapsulated within this product's name.
         :return: True if it worked. False if it didn't.
         """
-        if InvDatabase.check_if_exists(self.host, name):
+        if Database.check_if_exists(self.host, name):
             log.debug("Doing the updates one by one")
             try:
                 # Updating the cost if needed
@@ -152,7 +155,7 @@ class InvDatabase:
         :param name: The name of the product to erase.
         :return: True if it worked. False if it didn't.
         """
-        if InvDatabase.check_if_exists(self.host, name.upper()):
+        if Database.check_if_exists(self.host, name.upper()):
             log.debug(f"'{name.upper()}' product found. Erasing it.")
             try:
                 with DatabaseCursor(self.host) as cursor:
@@ -188,5 +191,55 @@ class InvDatabase:
                 else:
                     log.error("There were no products at all.")
                     return []
+        except OperationalError:
+            log.critical("An OperationalError was raised by sqlite3.")
+
+    def check_if_users(self):
+        """
+        Checks if the database holds records for users at all.
+        :return: True if there are users. False if there aren't.
+        """
+        log.debug("Checking if there are users at all.")
+        try:
+            with DatabaseCursor(self.host) as cursor:
+                cursor.execute("SELECT * FROM users")
+                results = cursor.fetchall()
+                if results:
+                    log.debug("Apparently, there are users registered")
+                    return True
+                else:
+                    log.error("There are no users in the database")
+                    return False
+        except OperationalError:
+            log.critical("An OperationalError was raised by sqlite3.")
+
+    def register_user(self, username: str, password: str):
+        try:
+            log.debug("Adding the new user.")
+            with DatabaseCursor(self.host) as cursor:
+                cursor.execute("INSERT INTO users VALUES(?, ?)", (username, password))
+        except OperationalError:
+            log.critical("An OperationalError was raised by sqlite3.")
+        else:
+            log.debug(f"The user '{username}' was added correctly")
+
+    def check_login_info(self, username: str, password: str):
+        try:
+            log.debug("Checking if there's a username's match.")
+            with DatabaseCursor(self.host) as cursor:
+                cursor.execute("SELECT username FROM users WHERE username=?", (username,))
+                results = cursor.fetchone()
+                if results:
+                    log.debug("There was a match for the username.")
+                    cursor.execute("SELECT password FROM USERS where username=?", (username, ))
+                    hashed_password = cursor.fetchone()[0]
+                    if check_password_hash(hashed_password, password):
+                        log.debug("The passwords match.")
+                        return True
+                    else:
+                        log.error("There wasn't a match for the password.")
+                        return False
+                else:
+                    log.error("There wasn't match for this username.")
         except OperationalError:
             log.critical("An OperationalError was raised by sqlite3.")
