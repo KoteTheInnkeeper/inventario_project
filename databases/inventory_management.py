@@ -38,8 +38,6 @@ class Database:
                 log.debug("Creating 'products' table if it doesn't exists already.")
                 cursor.execute("CREATE TABLE IF NOT EXISTS products(name TEXT UNIQUE primary key, cost_price REAL, "
                                "sell_price REAL, in_stock INTEGER)")
-                log.debug("Creating the 'users' table if it doesn't exists already")
-                cursor.execute("CREATE TABLE IF NOT EXISTS users(username TEXT UNIQUE primary key, password TEXT)")
         except Exception:
             log.critical("Unable to initialize the database.")
             raise DatabaseInitError("Unable to initialize the database. Check the 'log.txt' file")
