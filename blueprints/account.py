@@ -1,6 +1,6 @@
 import logging
 
-from flask import Blueprint, render_template, redirect, url_for, request, session
+from flask import Blueprint, render_template, redirect, url_for, request, session, flash
 from werkzeug.security import generate_password_hash
 from blueprints.routes import inv_db, user_db
 from login_info.login_management import UserDatabase
@@ -21,13 +21,15 @@ def login():
         if usermatch and passmatch:
             session['user'] = username.lower()
             log.debug(f"There was a match. The user '{username}' was successfully logged in.")
-            return f"<h1>Bienvenido, {session['user']}</h1>"
+            flash(f"¡Bienvenido, {username}!", "message")
         elif usermatch:
             log.error("The username was correct, but the password wasn't.")
-            return "<h1>Contraseña incorrecta</h1>"
-        return "<h1>No hay una cuenta registrada con ese usuario.</h1>"
+            flash(f"Contraseña incorrecta", "error")
+        else:
+            flash(f"No hay una cuenta registrada con este nombre de usuario.", "error")
+        return redirect(url_for('account.login'))
     else:
-        return "<h1>Tasintentando loguear y estás en login.html EN GET </h1>"
+        return render_template('login.html')
 
 
 @account.route('/signup', methods=['GET', 'POST'])
@@ -58,5 +60,12 @@ def signout():
         log.error("There was no user to logout.")
     return redirect(url_for('routes.home'))
 
+
+@account.route('/dashboard')
+def dashboard():
+    if "user" in session:
+        return "<h1>This is supposed to be a dashboard.</h1>"
+    else:
+        return redirect(url_for('account.login'))
 
 

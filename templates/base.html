@@ -13,11 +13,18 @@
                 <ul class="navbar-nav">
                 {% block navbar_elements%}
                 {% endblock %}
-                {% if "user" in session %}
-                    <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="{{url_for('account.signout')}}">Cerrar sesión</a>
-                    </li>
-                {% endif %}
+                <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="CuentaDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Cuenta
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="CuentaDropdown">
+                    {% if 'user' in session %}
+                  <li><a class="dropdown-item" href="{{url_for('account.dashboard')}}">Mi cuenta</a></li>
+                  <li><a class="dropdown-item" href="{{url_for('account.signout')}}">Cerrar sesión</a></li>
+                    {% else %}
+                    <li><a class="dropdown-item" href="{{url_for('account.login')}}">Ingresar</a></li>
+                    {% endif %}
+                </ul>
                 </ul>
             </div>
             </div>
@@ -30,17 +37,22 @@
         
     
     </header>
+
+    <div class="container-xxl bg-light">
     <body>
-    <div class="mx-3">
         {% block body %}
         {% endblock %}
-    </div>
     </body>
 
     <footer>
+    <div class="container-sm">
+        <hr class="my-4">
         {% block footer %}
         {% endblock %}
+        <p class="text-center">A small project to test a few things.</p>
+    </div>
     </footer>
+    </div>
 
 
     <!-- Bootstrap footer -->
