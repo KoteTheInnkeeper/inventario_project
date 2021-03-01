@@ -7,3 +7,5 @@ venv
 
 # Files depending on the 'execution'.
 log.txt
+./login_info/users.db
+./databases/database.db
