@@ -21,9 +21,25 @@
 
 {% block body %}
 {% if not 'user' in session %}
-<div class="alert alert-warning" role="alert">
+<div class="alert alert-warning distanced-from-navbar text-center" role="alert">
   Inicie sesión para utilizar la página. Si no existe usuario alguno, tendrá que registrarlo.
 </div>
+<!-- Flashed messages -->
+{% with messages = get_flashed_messages(True, ("error", "message", "info")) %}
+    {% if messages %}
+        {% for type, message in messages %}
+
+                {% if type == 'error' %}
+                <div class="distanced-from-navbar alert alert-danger login-card mx-auto text-center"> {{message}}
+                </div>
+                {% else %}
+                <div class="distanced-from-navbar alert alert-success login-card mx-auto text-center"> {{message}}
+                </div>
+                {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+<!-- Flashed messages -->
 <div class="text-center">
     {% if users_exist %}
     <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#LoginModal">Ingresar</button>
@@ -31,6 +47,7 @@
     <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#RegisterModal">Crear usuario</button>
     {% endif %}
 </div>
+
 <!--Sign in modal-->
 
     <div class="modal fade" id="LoginModal" tabindex="-1" aria-labelledby="LoginModal" aria-hidden="true">

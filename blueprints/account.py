@@ -22,6 +22,7 @@ def login():
             session['user'] = username.lower()
             log.debug(f"There was a match. The user '{username}' was successfully logged in.")
             flash(f"¡Bienvenido, {username}!", "message")
+            return redirect(url_for('account.my_account'))
         elif usermatch:
             log.error("The username was correct, but the password wasn't.")
             flash(f"Contraseña incorrecta", "error")
@@ -56,16 +57,18 @@ def signout():
     if "user" in session:
         session.pop('user', None)
         log.debug("Successfully logged out. Returning to home")
+        flash("Sesión cerrada correctamente.", 'info')
     else:
         log.error("There was no user to logout.")
     return redirect(url_for('routes.home'))
 
 
-@account.route('/dashboard')
-def dashboard():
+@account.route('/my_account')
+def my_account():
     if "user" in session:
-        return "<h1>This is supposed to be a dashboard.</h1>"
+        return render_template('my_account.html', username=session['user'])
     else:
+        flash("Debe iniciar sesión para acceder a esa página", 'error')
         return redirect(url_for('account.login'))
 
 

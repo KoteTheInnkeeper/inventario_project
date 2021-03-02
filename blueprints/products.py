@@ -24,6 +24,7 @@ def show_stock():
             raise NotAllowed("A session wasn't found.")
     except NotAllowed:
         log.error("Theres no session at the moment. This page can only be seen when there's an active session.")
+        flash("Debe iniciar sesión para utilizar esa página.", 'error')
         return redirect(url_for('account.login'))
 
 
@@ -37,6 +38,7 @@ def add_product():
             raise NotAllowed("A session wasn't found.")
     except NotAllowed:
         log.error("Attempted to load the 'add_product' page withouth a session.")
+        flash("Debe iniciar sesión para utilizar esa página.", 'error')
         return redirect(url_for('account.login'))
 
 
@@ -50,4 +52,5 @@ def remove_product():
             raise NotAllowed("A session wasn't found.")
     except NotAllowed:
         log.error("Attempted to load the 'remove_products' page withouth a session.")
+        flash("Debe iniciar sesión para utilizar esa página.", 'error')
         return redirect(url_for('account.login'))

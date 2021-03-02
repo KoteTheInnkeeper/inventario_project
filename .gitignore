@@ -11,5 +11,5 @@ log.txt
 ./databases/database.db
 
 # Cache files
-.pyc
+*.pyc
 __pycache__
