@@ -48,3 +48,9 @@ class UserNotUnique(Exception):
     """
     def __init__(self, message: str):
         super().__init__(message)
+
+# WebApp errors
+class NotAllowed(Exception):
+    """An exception raised when attempting to enter a page that requires your session to be active."""
+    def __init__(self, message: str):
+        super().__init__(message)

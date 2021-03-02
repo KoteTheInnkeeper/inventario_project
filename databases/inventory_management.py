@@ -4,7 +4,7 @@ from databases.database_connection import DatabaseCursor
 from werkzeug.security import check_password_hash
 
 # Typing
-from typing import List
+from typing import List, Tuple
 # Error handling
 from utils.errors import DatabaseInitError, ProductExists, UnableToAdd
 from _sqlite3 import OperationalError, InternalError, IntegrityError
@@ -192,52 +192,16 @@ class Database:
         except OperationalError:
             log.critical("An OperationalError was raised by sqlite3.")
 
-    def check_if_users(self):
+    def get_products_info(self) -> List[Tuple]:
         """
-        Checks if the database holds records for users at all.
-        :return: True if there are users. False if there aren't.
+        :return: A list of tuples where each element from said tuple states for the product's name, cost price,
+        sell price, and in stock amount.
         """
-        log.debug("Checking if there are users at all.")
+        log.debug("Getting all the products")
         try:
             with DatabaseCursor(self.host) as cursor:
-                cursor.execute("SELECT * FROM users")
-                results = cursor.fetchall()
-                if results:
-                    log.debug("Apparently, there are users registered")
-                    return True
-                else:
-                    log.error("There are no users in the database")
-                    return False
+                cursor.execute("SELECT * FROM products")
+                return list(cursor.fetchall())
         except OperationalError:
             log.critical("An OperationalError was raised by sqlite3.")
-
-    def register_user(self, username: str, password: str):
-        try:
-            log.debug("Adding the new user.")
-            with DatabaseCursor(self.host) as cursor:
-                cursor.execute("INSERT INTO users VALUES(?, ?)", (username, password))
-        except OperationalError:
-            log.critical("An OperationalError was raised by sqlite3.")
-        else:
-            log.debug(f"The user '{username}' was added correctly")
-
-    def check_login_info(self, username: str, password: str):
-        try:
-            log.debug("Checking if there's a username's match.")
-            with DatabaseCursor(self.host) as cursor:
-                cursor.execute("SELECT username FROM users WHERE username=?", (username,))
-                results = cursor.fetchone()
-                if results:
-                    log.debug("There was a match for the username.")
-                    cursor.execute("SELECT password FROM USERS where username=?", (username, ))
-                    hashed_password = cursor.fetchone()[0]
-                    if check_password_hash(hashed_password, password):
-                        log.debug("The passwords match.")
-                        return True
-                    else:
-                        log.error("There wasn't a match for the password.")
-                        return False
-                else:
-                    log.error("There wasn't match for this username.")
-        except OperationalError:
-            log.critical("An OperationalError was raised by sqlite3.")
+            raise

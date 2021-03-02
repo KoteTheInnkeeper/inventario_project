@@ -6,6 +6,7 @@ from databases.inventory_management import Database
 from flask import Flask, redirect, render_template, url_for, session
 from blueprints.routes import routes
 from blueprints.account import account
+from blueprints.products import products
 from datetime import timedelta
 
 # Setting the log file.
@@ -17,6 +18,7 @@ log.debug("Initializing the Flask app.")
 app = Flask(__name__)
 app.register_blueprint(routes)
 app.register_blueprint(account)
+app.register_blueprint(products)
 app.secret_key = "J@tAYGpzdCRL6C2jKBuW&8"
 app.permanent_session_lifetime = timedelta(hours=8)
 log.debug('Permanent session lifetime set')
@@ -25,5 +27,3 @@ log.debug('Permanent session lifetime set')
 # Running the app
 if __name__ == '__main__':
     app.run(debug=True)
-
-

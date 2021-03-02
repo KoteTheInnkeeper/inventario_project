@@ -4,6 +4,9 @@ from flask import Blueprint, render_template, redirect, url_for, session
 from databases.inventory_management import Database
 from login_info.login_management import UserDatabase
 
+# Error handling
+from utils.errors import NotAllowed
+
 routes = Blueprint("routes", __name__, static_folder="static", template_folder="template", url_prefix="")
 # Create the logger
 log = logging.getLogger("inventory_logger.routes")

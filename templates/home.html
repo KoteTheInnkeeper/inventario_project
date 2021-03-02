@@ -2,16 +2,16 @@
 
 {% block navbar_elements %}
 <li class="nav-item">
-    <a class="nav-link active" aria-current="page" href="#">Inicio</a>
+    <a class="nav-link active" aria-current="page" href="{{url_for('routes.home')}}">Inicio</a>
   </li>
   <li class="nav-item dropdown">
     <a class="nav-link dropdown-toggle" href="#" id="ProductosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
       Productos
     </a>
     <ul class="dropdown-menu" aria-labelledby="ProductosDropdown">
-      <li><a class="dropdown-item" href="#">Ver stock</a></li>
-      <li><a class="dropdown-item" href="#">Agregar</a></li>
-      <li><a class="dropdown-item" href="#">Eliminar</a></li>
+      <li><a class="dropdown-item" href="{{url_for('products.show_stock')}}">Ver stock</a></li>
+      <li><a class="dropdown-item" href="{{url_for('products.add_product')}}">Agregar</a></li>
+      <li><a class="dropdown-item" href="{{url_for('products.remove_product')}}">Eliminar</a></li>
     </ul>
   </li>
 {% endblock %}
