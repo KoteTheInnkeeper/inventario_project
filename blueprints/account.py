@@ -30,7 +30,9 @@ def login():
             flash(f"No hay una cuenta registrada con este nombre de usuario.", "error")
         return redirect(url_for('account.login'))
     else:
-        return render_template('login.html')
+        if not user_db.check_if_users():
+            flash("No hay usuarios registrados. Registre uno para continuar.", "error")
+        return render_template('login.html', user_exist=user_db.check_if_users())
 
 
 @account.route('/signup', methods=['GET', 'POST'])
@@ -46,7 +48,9 @@ def signup():
                 raise
             else:
                 log.debug("User successfully registered. Redirecting to the homepage.")
-                return redirect(url_for('routes.home'))
+                session['user'] = new_username.lower()
+                flash(f"¡Bienvenido, {new_username}!", "message")
+                return redirect(url_for('account.my_account'))
     else:
         return "<h1>Tasintentando crear y estás en login.html EN GET </h1>"
 

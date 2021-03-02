@@ -60,7 +60,7 @@ class UserDatabase:
                     return False
         except OperationalError:
             log.critical("An OperationalError was raised by sqlite3.")
-            raise
+
 
     def new_user(self, username: str, hashed_password: str) -> bool:
         """A method used for creating a new user.

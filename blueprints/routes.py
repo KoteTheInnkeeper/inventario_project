@@ -36,7 +36,7 @@ def home():
             flash("Debe iniciar sesión para utilizar la página.", 'error')
         else:
             flash("Debe registrar un usuario. La página no puede utilizarse si no se inicia sesión.", 'error')
-        return redirect(url_for('account.login', _method='POST', user_exists=user_db.check_if_users()))
+        return redirect(url_for('account.login'))
 
 
 @routes.route('/epicum')

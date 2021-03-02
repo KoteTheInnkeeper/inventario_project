@@ -37,8 +37,8 @@
 
 <!-- Login messages -->
 {% if not 'user' in session %}
+{% if user_exist %}
 <!--Login form -->
-
 <div class="card text-left mx-auto login-card">
 <form action="#" method="POST">
     <div class="modal-body container-sm">
@@ -56,7 +56,44 @@
         <button type="submit" class="btn btn-dark" value="Ingresar">Ingresar</button>
     </div>
 </form>
+{% else %}
+<!--Register button-->
+<div class="container-sm text-center">
+<button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#RegisterModal">Crear usuario</button>  
 </div>
+  <!--Register modal-->
 
+  <div class="modal fade" id="RegisterModal" tabindex="-1" aria-labelledby="LoginModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="RegisterModalTitle">Regístrese</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <!--Sign up form-->
+        <form action="{{url_for('account.signup')}}" method="POST">
+        <div class="modal-body">
+        <div class="mb-3">
+          <label for="UserName" class="form-label">Usuario</label>
+          <input type="text" class="form-control" id="NewUserName" placeholder="Nombre de usuario" name="username" required>
+        </div>
+        <div class="mb-3">
+          <label for="Password" class="form-label">Contraseña</label>
+          <input type="password" class="form-control" id="NewPassword" placeholder="Contraseña" name="password" required>
+        </div>
+
+        <!--End register form-->
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            <input type="submit" class="btn btn-dark" value="Crear">
+        </div>
+        </form>
+        </div>
+    </div>
+</div>
+<!--End register modal-->
 {% endif %}
+{% endif %}
+</div>
 {% endblock %}
