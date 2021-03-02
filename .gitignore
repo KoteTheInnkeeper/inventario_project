@@ -9,3 +9,6 @@ venv
 log.txt
 ./login_info/users.db
 ./databases/database.db
+
+# Cache files
+*.pyc
