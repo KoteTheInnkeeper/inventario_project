@@ -1,9 +1,8 @@
 import logging
 
-# The database we use for the inventory_class.
-from databases.inventory_management import Database
+
 # Flask app things.
-from flask import Flask, redirect, render_template, url_for, session
+from flask import Flask
 from blueprints.routes import routes
 from blueprints.account import account
 from blueprints.products import products

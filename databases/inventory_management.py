@@ -6,8 +6,8 @@ from werkzeug.security import check_password_hash
 # Typing
 from typing import List, Tuple
 # Error handling
-from utils.errors import DatabaseInitError, ProductExists, UnableToAdd
-from _sqlite3 import OperationalError, InternalError, IntegrityError
+from utils.errors import DatabaseInitError, ProductExists, UnableToAdd, NoProductsFound
+from _sqlite3 import OperationalError, IntegrityError
 
 # Set the basic configurations for the logger
 logging.basicConfig(format="%(asctime)s %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s", level=logging.DEBUG,
@@ -71,20 +71,19 @@ class Database:
         :return: None
         """
         # Check if the product exists already and if the product doesn't exists, we start the adding process.
-        if not Database.check_if_exists(self.host, name):
-            try:
-                log.debug("Adding the product")
-                with DatabaseCursor(self.host) as cursor:
-                    cursor.execute("INSERT INTO products VALUES(?, ?, ?, ?)", (name.upper(), cost_price, sell_price, amount))
-            except Exception:
-                log.critical("There was an error at adding the product.")
-                raise UnableToAdd("We couldn't add the product.")
-            else:
-                log.debug(f"The product '{name.title()}' was added successfully.")
-                return True
+        try:
+            log.debug("Adding the product")
+            with DatabaseCursor(self.host) as cursor:
+                cursor.execute("INSERT INTO products VALUES(?, ?, ?, ?)", (name.upper(), cost_price, sell_price, amount))
+        except IntegrityError:
+            log.error("Duplicated names are not allowed for products.")
+            raise ProductExists("We couldn't add the product.")
+        except Exception:
+            log.critical("There was an error at adding the product.")
+            raise UnableToAdd("We couldn't add the product.")
         else:
-            log.error("Duplicated products are not permitted.")
-            return False
+            log.debug(f"The product '{name.title()}' was added successfully.")
+            return True
 
     def update(self, name: str, cost_price: float, sell_price: float, in_stock: int) -> bool:
         """
@@ -153,20 +152,16 @@ class Database:
         :param name: The name of the product to erase.
         :return: True if it worked. False if it didn't.
         """
-        if Database.check_if_exists(self.host, name.upper()):
+        try:
+            with DatabaseCursor(self.host) as cursor:
+                cursor.execute("DELETE FROM products WHERE name=?", (name.upper(), ))
             log.debug(f"'{name.upper()}' product found. Erasing it.")
-            try:
-                with DatabaseCursor(self.host) as cursor:
-                    cursor.execute("DELETE FROM products WHERE name=?", (name.upper(), ))
-            except OperationalError:
-                log.critical("An OperationalError was raised by sqlite3.")
-                return False
-            else:
-                log.debug(f"Product {name.upper()} removed successfully.")
-                return True
-        else:
+        except OperationalError:
             log.error("The product didn't exist at all.")
-            return False
+            raise NoProductsFound("There's not such a product to remove.")
+        else:
+            log.debug(f"Product {name.upper()} removed successfully.")
+            return True
 
     # Here there are a few methods that will be useful for the front end.
     def get_products_names(self) -> List[str]:
@@ -200,7 +195,7 @@ class Database:
         log.debug("Getting all the products")
         try:
             with DatabaseCursor(self.host) as cursor:
-                cursor.execute("SELECT * FROM products")
+                cursor.execute("SELECT * FROM products ORDER BY name")
                 return list(cursor.fetchall())
         except OperationalError:
             log.critical("An OperationalError was raised by sqlite3.")

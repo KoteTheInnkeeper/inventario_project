@@ -25,6 +25,16 @@ class UnableToAdd(Exception):
         super().__init__(message)
 
 
+class NoProductsFound(Exception):
+    """
+        An error for not finding any product at all.
+    """
+
+    def __init__(self, message: str):
+        super().__init__(message)
+
+
+
 # USERS ERRORS
 class UnmatchedUsername(Exception):
     """

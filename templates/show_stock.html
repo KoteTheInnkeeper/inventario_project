@@ -15,3 +15,40 @@
     </ul>
   </li>
 {% endblock %}
+
+
+{% block body %}
+{% if products[0] %}
+<div style="padding: 20px;">
+<table class="table table-hover table-striped">
+  <thead>
+    <tr>
+      <th scope="col">N° de Producto</th>
+      <th scope="col">Nombre del producto</th>
+      <th scope="col">Costo ($/u)</th>
+      <th scope="col">Venta ($/u)</th>
+      <th scope="col">Unidades en stock</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% set i = 1 %}
+    {% for (name, cost_price, sell_price, in_stock) in products  %}
+    {% set cost_price = "%.2f" % cost_price %}
+    {% set sell_price = "%.2f" % sell_price %}
+      <th scope="row">{{i}}</th>
+      <td>{{name}}</td>
+      <td>{{cost_price}}</td>
+      <td>{{sell_price}}</td>
+      <td>{{in_stock}}</td>
+    {% set i = i + 1 %}
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% else %}
+<div class="alert alert-danger container-sm mx-auto login-card text-center" role="alert">
+  <p>¡No se agregó ningún producto a la base de datos!</p>
+   <p> Vaya a Productos><a href="{{url_for('products.add_product')}}">Agregar</a> para agregar uno.</p>
+</div>
+{% endif %}
+{% endblock %}

@@ -18,7 +18,8 @@ def show_stock():
     log.debug("Attempting to show stock. Checking if there's an active session.")
     try:
         if "user" in session:
-            products = inv_db.get_products_info
+            products = inv_db.get_products_info()
+            print(products)
             return render_template('show_stock.html', products=products)
         else:
             raise NotAllowed("A session wasn't found.")
