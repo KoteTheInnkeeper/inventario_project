@@ -18,12 +18,12 @@
 
 
 {% block body %}
-{% if products[0] %}
-<div style="padding: 20px;">
-<table class="table table-hover table-striped">
+{% if products %}
+<div class="card bg-light" style="padding: 20px;">
+<table class="table table-hover">
   <thead>
     <tr>
-      <th scope="col">N° de Producto</th>
+      <th scope="col">N°</th>
       <th scope="col">Nombre del producto</th>
       <th scope="col">Costo ($/u)</th>
       <th scope="col">Venta ($/u)</th>
@@ -31,16 +31,17 @@
     </tr>
   </thead>
   <tbody>
-    {% set i = 1 %}
-    {% for (name, cost_price, sell_price, in_stock) in products  %}
+    {% for i, (name, cost_price, sell_price, in_stock) in products  %}
     {% set cost_price = "%.2f" % cost_price %}
     {% set sell_price = "%.2f" % sell_price %}
+    <tr>
+      
       <th scope="row">{{i}}</th>
       <td>{{name}}</td>
       <td>{{cost_price}}</td>
       <td>{{sell_price}}</td>
       <td>{{in_stock}}</td>
-    {% set i = i + 1 %}
+    </tr>
     {% endfor %}
   </tbody>
 </table>
@@ -51,4 +52,7 @@
    <p> Vaya a Productos><a href="{{url_for('products.add_product')}}">Agregar</a> para agregar uno.</p>
 </div>
 {% endif %}
+
+
+
 {% endblock %}

@@ -16,6 +16,15 @@ class ProductExists(Exception):
         super().__init__(message)
 
 
+class InvalidInput(Exception):
+    """
+        An error to be raised when an input doesn't match the expected on a certain form.
+    """
+
+    def __init__(self, message: str):
+        super().__init__(message)
+
+
 class UnableToAdd(Exception):
     """
         An error for not being able to add a product.
@@ -64,3 +73,4 @@ class NotAllowed(Exception):
     """An exception raised when attempting to enter a page that requires your session to be active."""
     def __init__(self, message: str):
         super().__init__(message)
+

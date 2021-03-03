@@ -1,9 +1,12 @@
 import logging
 
+# Erasing previous log file.
+open('log.txt', 'w')
+   
 
 # Flask app things.
 from flask import Flask
-from blueprints.routes import routes
+from blueprints.routes import routes, inv_db
 from blueprints.account import account
 from blueprints.products import products
 from datetime import timedelta

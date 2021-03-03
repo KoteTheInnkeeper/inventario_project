@@ -52,7 +52,7 @@ def signup():
                 flash(f"¡Bienvenido, {new_username}!", "message")
                 return redirect(url_for('account.my_account'))
     else:
-        return "<h1>Tasintentando crear y estás en login.html EN GET </h1>"
+        return redirect(url_for('account.my_account'))
 
 
 @account.route('/signout')
@@ -61,10 +61,10 @@ def signout():
     if "user" in session:
         session.pop('user', None)
         log.debug("Successfully logged out. Returning to home")
-        flash("Sesión cerrada correctamente.", 'info')
+        flash("Sesión cerrada correctamente.", 'message')
     else:
         log.error("There was no user to logout.")
-    return redirect(url_for('routes.home'))
+    return redirect(url_for('account.login'))
 
 
 @account.route('/my_account')

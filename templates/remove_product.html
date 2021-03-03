@@ -16,3 +16,50 @@
   </li>
 {% endblock %}
 
+{% block body %}
+<!-- Flashed messages -->
+{% with messages = get_flashed_messages(True, ("error", "message")) %}
+    {% if messages %}
+        {% for message in messages %}
+            {% if message[0] == 'error' %}
+                <div class="alert alert-danger container-sm mx-auto login-card" role="alert">
+                    {{ message[1] }}
+                </div>
+            {% elif message[0] == 'message' %}
+                <div class="alert alert-success container-sm mx-auto login-card" role="alert">
+                    {{ message[1] }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+<!-- Flashed messages -->
+
+
+<!--add_product card and form -->
+<div class="card text-left mx-auto login-card bg-light">
+<form action="#" method="POST">
+    <div class="modal-body container-sm">
+    <div class="mb-3">
+      <label for="ProductName" class="form-label">Producto a eliminar</label>
+      {% if products_names %}
+        <select class="form-control" id="ProductName" name="product_name">
+          {% for product_name in products_names %}
+          <option>{{ product_name }}</option>
+          {% endfor %}
+
+        </select>
+    <p></p>
+    <div class="container-sm text-center">
+        <button type="submit" class="btn btn-danger" value="Agregar">Eliminar producto</button>
+    </div>
+  </form>
+      {% else %}
+      <div class="alert alert-danger container-sm mx-auto text-center" role="alert">
+        <p>¡No se agregó ningún producto a la base de datos!</p>
+        <p> Vaya a Productos><a href="{{url_for('products.add_product')}}">Agregar</a> para agregar uno.</p>
+      </div>
+      {% endif %}
+    </div>
+{% endblock %}
+

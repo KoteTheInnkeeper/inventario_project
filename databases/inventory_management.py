@@ -4,7 +4,7 @@ from databases.database_connection import DatabaseCursor
 from werkzeug.security import check_password_hash
 
 # Typing
-from typing import List, Tuple
+from typing import List, Tuple, Union
 # Error handling
 from utils.errors import DatabaseInitError, ProductExists, UnableToAdd, NoProductsFound
 from _sqlite3 import OperationalError, IntegrityError
@@ -182,21 +182,32 @@ class Database:
                     log.debug("List completed. Returning it.")
                     return products_names
                 else:
-                    log.error("There were no products at all.")
-                    return []
+                    raise NoProductsFound('There are no products stored in database at the moment.')
         except OperationalError:
             log.critical("An OperationalError was raised by sqlite3.")
+        except NoProductsFound:
+            log.error("There were no products at all.")
+            return []
 
-    def get_products_info(self) -> List[Tuple]:
+    def get_products_info(self) -> List[Tuple[Union[int, Tuple]]]:
         """
-        :return: A list of tuples where each element from said tuple states for the product's name, cost price,
-        sell price, and in stock amount.
+        :return: A list where each element consist in a tuple. This tuple, at the same time, has an integer
+        for it's first element. The second one is another tuple where each element is some info about the
+        product (in this order: name, cost price, sell price and amount in stock).
         """
         log.debug("Getting all the products")
         try:
             with DatabaseCursor(self.host) as cursor:
                 cursor.execute("SELECT * FROM products ORDER BY name")
-                return list(cursor.fetchall())
+                results = list(cursor.fetchall())
+                if results:
+                    log.debug("Products found. Returning them")
+                    return enumerate(results, start=1)
+                else:
+                    raise NoProductsFound('There are no products in the list at all')
         except OperationalError:
             log.critical("An OperationalError was raised by sqlite3.")
             raise
+        except NoProductsFound:
+            log.debug("There's no products stored in databse.")
+            return False
