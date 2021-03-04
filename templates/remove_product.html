@@ -35,14 +35,14 @@
 {% endwith %}
 <!-- Flashed messages -->
 
-
-<!--add_product card and form -->
+{% if products_names %}
+<!--remove_product card and form -->
 <div class="card text-left mx-auto login-card bg-light">
 <form action="#" method="POST">
     <div class="modal-body container-sm">
     <div class="mb-3">
       <label for="ProductName" class="form-label">Producto a eliminar</label>
-      {% if products_names %}
+      
         <select class="form-control" id="ProductName" name="product_name">
           {% for product_name in products_names %}
           <option>{{ product_name }}</option>
@@ -54,12 +54,13 @@
         <button type="submit" class="btn btn-danger" value="Agregar">Eliminar producto</button>
     </div>
   </form>
+</div>
       {% else %}
-      <div class="alert alert-danger container-sm mx-auto text-center" role="alert">
+      <div class="alert alert-danger container-sm mx-auto text-center login-card" role="alert">
         <p>¡No se agregó ningún producto a la base de datos!</p>
         <p> Vaya a Productos><a href="{{url_for('products.add_product')}}">Agregar</a> para agregar uno.</p>
       </div>
       {% endif %}
-    </div>
+    
 {% endblock %}
 
